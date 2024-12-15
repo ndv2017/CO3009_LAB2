@@ -35,6 +35,7 @@
 /* USER CODE BEGIN PD */
 #define DURATION_0 100
 #define DURATION_1 50
+#define DURATION_2 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,7 +48,7 @@ TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 int led_index = 0;
-int led_buffer[LED_NUMBER] = {1, 2};
+int led_buffer[LED_NUMBER] = {1, 2, 3, 0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,11 +95,15 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(EN_0_GPIO_Port, EN_0_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(EN_1_GPIO_Port, EN_1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(EN_2_GPIO_Port, EN_2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(EN_3_GPIO_Port, EN_3_Pin, GPIO_PIN_SET);
   HAL_TIM_Base_Start_IT(&htim2);
   setTimer0(DURATION_0);
   setTimer1(DURATION_1);
+  setTimer2(DURATION_2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,15 +122,37 @@ int main(void)
 			  led_index = 1;
 			  HAL_GPIO_WritePin(EN_0_GPIO_Port, EN_0_Pin, GPIO_PIN_SET);
 			  HAL_GPIO_WritePin(EN_1_GPIO_Port, EN_1_Pin, GPIO_PIN_RESET);
+			  HAL_GPIO_WritePin(EN_2_GPIO_Port, EN_2_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_3_GPIO_Port, EN_3_Pin, GPIO_PIN_SET);
 			  break;
 		  case 1:
+			  led_index = 2;
+			  HAL_GPIO_WritePin(EN_0_GPIO_Port, EN_0_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_1_GPIO_Port, EN_1_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_2_GPIO_Port, EN_2_Pin, GPIO_PIN_RESET);
+			  HAL_GPIO_WritePin(EN_3_GPIO_Port, EN_3_Pin, GPIO_PIN_SET);
+			  break;
+		  case 2:
+			  led_index = 3;
+			  HAL_GPIO_WritePin(EN_0_GPIO_Port, EN_0_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_1_GPIO_Port, EN_1_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_2_GPIO_Port, EN_2_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_3_GPIO_Port, EN_3_Pin, GPIO_PIN_RESET);
+			  break;
+		  case 3:
 			  led_index = 0;
 			  HAL_GPIO_WritePin(EN_0_GPIO_Port, EN_0_Pin, GPIO_PIN_RESET);
 			  HAL_GPIO_WritePin(EN_1_GPIO_Port, EN_1_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_2_GPIO_Port, EN_2_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(EN_3_GPIO_Port, EN_3_Pin, GPIO_PIN_SET);
 			  break;
 		  default:
 			  break;
 		  }
+	  }
+	  if (timer2_flag == 1){
+		  setTimer2(DURATION_2);
+		  HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
 	  }
     /* USER CODE END WHILE */
 
@@ -227,16 +254,19 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_Pin|EN_0_Pin|EN_1_Pin|SEG_A_Pin
-                          |SEG_B_Pin|SEG_C_Pin|SEG_D_Pin|SEG_E_Pin
-                          |SEG_F_Pin|SEG_G_Pin|SEG_DP_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_Pin|DOT_Pin|EN_0_Pin|EN_1_Pin
+                          |EN_2_Pin|EN_3_Pin|SEG_A_Pin|SEG_B_Pin
+                          |SEG_C_Pin|SEG_D_Pin|SEG_E_Pin|SEG_F_Pin
+                          |SEG_G_Pin|SEG_DP_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_Pin EN_0_Pin EN_1_Pin SEG_A_Pin
-                           SEG_B_Pin SEG_C_Pin SEG_D_Pin SEG_E_Pin
-                           SEG_F_Pin SEG_G_Pin SEG_DP_Pin */
-  GPIO_InitStruct.Pin = LED_Pin|EN_0_Pin|EN_1_Pin|SEG_A_Pin
-                          |SEG_B_Pin|SEG_C_Pin|SEG_D_Pin|SEG_E_Pin
-                          |SEG_F_Pin|SEG_G_Pin|SEG_DP_Pin;
+  /*Configure GPIO pins : LED_Pin DOT_Pin EN_0_Pin EN_1_Pin
+                           EN_2_Pin EN_3_Pin SEG_A_Pin SEG_B_Pin
+                           SEG_C_Pin SEG_D_Pin SEG_E_Pin SEG_F_Pin
+                           SEG_G_Pin SEG_DP_Pin */
+  GPIO_InitStruct.Pin = LED_Pin|DOT_Pin|EN_0_Pin|EN_1_Pin
+                          |EN_2_Pin|EN_3_Pin|SEG_A_Pin|SEG_B_Pin
+                          |SEG_C_Pin|SEG_D_Pin|SEG_E_Pin|SEG_F_Pin
+                          |SEG_G_Pin|SEG_DP_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
