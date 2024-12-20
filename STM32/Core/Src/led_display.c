@@ -1,10 +1,3 @@
-/*
- * led_display.c
- *
- *  Created on: Oct 7, 2024
- *      Author: Admin
- */
-
 #include "led_display.h"
 
 uint16_t set7SEG[11] = {0x40, 0x79, 0x24, 0x30, 0x19, 0x12, 0x02, 0x78, 0x00, 0x10, 0xFF};

@@ -1,10 +1,3 @@
-/*
- * software_timer.c
- *
- *  Created on: Oct 7, 2024
- *      Author: Admin
- */
-
 #include "software_timer.h"
 
 int timer0_counter = 0;
